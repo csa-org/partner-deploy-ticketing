@@ -1,0 +1,119 @@
+name: container-vulnerability-scanning
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+  security-events: write
+  actions: read
+jobs:
+  scan-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Build the Docker images
+        run: docker build -t local-assets:latest ./docker/Dockerfile_assets
+      - name: Scan Dockerfile_assets for vulnerabilities using Lacework Inline Scanner
+        uses: lacework/lw-scanner-action@v1.4.1
+        continue-on-error: true
+        with:
+          LW_ACCOUNT_NAME: ${{ secrets.LW_ACCOUNT_NAME }}
+          LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
+          IMAGE_NAME: local-assets
+          IMAGE_TAG: latest
+          SAVE_RESULTS_IN_LACEWORK: false
+          RESULTS_IN_GITHUB_SUMMARY: true
+      - name: Change formatting for PR
+        run: |
+          echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_assets" > pr-results.md
+          echo "<pre>" >> pr-results.md
+          cat results.stdout >> pr-results.md
+          echo "</pre>" >> pr-results.md
+      - name: Add Inline Scanner results comment to PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: pr-results.md
+  scan-contacts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Build the Docker images
+        run: docker build -t local-contacts:latest ./docker/Dockerfile_contacts
+      - name: Scan Dockerfile_contacts for vulnerabilities using Lacework Inline Scanner
+        uses: lacework/lw-scanner-action@v1.4.1
+        continue-on-error: true
+        with:
+          LW_ACCOUNT_NAME: ${{ secrets.LW_ACCOUNT_NAME }}
+          LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
+          IMAGE_NAME: local-contacts
+          IMAGE_TAG: latest
+          SAVE_RESULTS_IN_LACEWORK: false
+          RESULTS_IN_GITHUB_SUMMARY: true
+      - name: Change formatting for PR
+        run: |
+          echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_contacts" > pr-results.md
+          echo "<pre>" >> pr-results.md
+          cat results.stdout >> pr-results.md
+          echo "</pre>" >> pr-results.md
+      - name: Add Inline Scanner results comment to PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: pr-results.md
+  scan-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Build the Docker images
+        run: docker build -t local-frontend:latest ./docker/Dockerfile_frontend
+      - name: Scan Dockerfile_frontend for vulnerabilities using Lacework Inline Scanner
+        uses: lacework/lw-scanner-action@v1.4.1
+        continue-on-error: true
+        with:
+          LW_ACCOUNT_NAME: ${{ secrets.LW_ACCOUNT_NAME }}
+          LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
+          IMAGE_NAME: local-frontend
+          IMAGE_TAG: latest
+          SAVE_RESULTS_IN_LACEWORK: false
+          RESULTS_IN_GITHUB_SUMMARY: true
+      - name: Change formatting for PR
+        run: |
+          echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_frontend" > pr-results.md
+          echo "<pre>" >> pr-results.md
+          cat results.stdout >> pr-results.md
+          echo "</pre>" >> pr-results.md
+      - name: Add Inline Scanner results comment to PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: pr-results.md
+  scan-tickets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Build the Docker images
+        run: docker build -t local-tickets:latest ./docker/Dockerfile_tickets
+      - name: Scan Dockerfile_tickets for vulnerabilities using Lacework Inline Scanner
+        uses: lacework/lw-scanner-action@v1.4.1
+        continue-on-error: true
+        with:
+          LW_ACCOUNT_NAME: ${{ secrets.LW_ACCOUNT_NAME }}
+          LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
+          IMAGE_NAME: local-tickets
+          IMAGE_TAG: latest
+          SAVE_RESULTS_IN_LACEWORK: false
+          RESULTS_IN_GITHUB_SUMMARY: true
+      - name: Change formatting for PR
+        run: |
+          echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_tickets" > pr-results.md
+          echo "<pre>" >> pr-results.md
+          cat results.stdout >> pr-results.md
+          echo "</pre>" >> pr-results.md
+      - name: Add Inline Scanner results comment to PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: pr-results.md
