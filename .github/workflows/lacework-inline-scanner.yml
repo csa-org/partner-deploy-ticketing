@@ -22,7 +22,7 @@ jobs:
         uses: lacework/lw-scanner-action@v1.4.1
         continue-on-error: true
         with:
-          LW_ACCOUNT_NAME: $LW_ACCOUNT_NAME
+          LW_ACCOUNT_NAME: ${{ vars.LW_ACCOUNT_NAME }}
           LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
           IMAGE_NAME: local-assets
           IMAGE_TAG: latest
@@ -55,7 +55,7 @@ jobs:
         run: |
           if [ -f lacework-policies-failed ]; then
             echo "Lacework policies failed"
-            echo "Please review the results in the Lacework Vulnerabilities dossier: https://$LW_ACCOUNT_NAME.lacework.net/ui/investigation/container/VulnerabilityDashboard"
+            echo "Please review the results in the Lacework Vulnerabilities dossier: https://${{ vars.LW_ACCOUNT_NAME }}.lacework.net/ui/investigation/container/VulnerabilityDashboard"
             exit 1
           else
             echo "Lacework policies passed"
@@ -74,7 +74,7 @@ jobs:
         uses: lacework/lw-scanner-action@v1.4.1
         continue-on-error: true
         with:
-          LW_ACCOUNT_NAME: $LW_ACCOUNT_NAME
+          LW_ACCOUNT_NAME: ${{ vars.LW_ACCOUNT_NAME }}
           LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
           IMAGE_NAME: local-contacts
           IMAGE_TAG: latest
@@ -107,7 +107,7 @@ jobs:
         run: |
           if [ -f lacework-policies-failed ]; then
             echo "Lacework policies failed"
-            echo "Please review the results in the Lacework Vulnerabilities dossier: https://$LW_ACCOUNT_NAME.lacework.net/ui/investigation/container/VulnerabilityDashboard"
+            echo "Please review the results in the Lacework Vulnerabilities dossier: https://${{ vars.LW_ACCOUNT_NAME }}.lacework.net/ui/investigation/container/VulnerabilityDashboard"
             exit 1
           else
             echo "Lacework policies passed"
@@ -126,7 +126,7 @@ jobs:
         uses: lacework/lw-scanner-action@v1.4.1
         continue-on-error: true
         with:
-          LW_ACCOUNT_NAME: $LW_ACCOUNT_NAME
+          LW_ACCOUNT_NAME: ${{ vars.LW_ACCOUNT_NAME }}
           LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
           IMAGE_NAME: local-frontend
           IMAGE_TAG: latest
@@ -159,7 +159,7 @@ jobs:
         run: |
           if [ -f lacework-policies-failed ]; then
             echo "Lacework policies failed"
-            echo "Please review the results in the Lacework Vulnerabilities dossier: https://$LW_ACCOUNT_NAME.lacework.net/ui/investigation/container/VulnerabilityDashboard"
+            echo "Please review the results in the Lacework Vulnerabilities dossier: https://${{ vars.LW_ACCOUNT_NAME }}.lacework.net/ui/investigation/container/VulnerabilityDashboard"
             exit 1
           else
             echo "Lacework policies passed"
@@ -211,7 +211,7 @@ jobs:
         run: |
           if [ -f lacework-policies-failed ]; then
             echo "Lacework policies failed"
-            echo "Please review the results in the Lacework Vulnerabilities dossier: https://$LW_ACCOUNT_NAME.lacework.net/ui/investigation/container/VulnerabilityDashboard"
+            echo "Please review the results in the Lacework Vulnerabilities dossier: https://${{ vars.LW_ACCOUNT_NAME }}.lacework.net/ui/investigation/container/VulnerabilityDashboard"
             exit 1
           else
             echo "Lacework policies passed"
