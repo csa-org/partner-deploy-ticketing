@@ -90,7 +90,7 @@ jobs:
             touch lacework-policies-failed
           fi
 
-          echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_assets" > pr-results.md
+          echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_contacts" > pr-results.md
           echo "## Scan Summary" >> pr-results.md
           echo "<pre>" >> pr-results.md
           cat scan-summary-results.md >> pr-results.md
@@ -142,7 +142,7 @@ jobs:
             touch lacework-policies-failed
           fi
 
-          echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_assets" > pr-results.md
+          echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_frontend" > pr-results.md
           echo "## Scan Summary" >> pr-results.md
           echo "<pre>" >> pr-results.md
           cat scan-summary-results.md >> pr-results.md
@@ -194,7 +194,7 @@ jobs:
             touch lacework-policies-failed
           fi
 
-          echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_assets" > pr-results.md
+          echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_tickets" > pr-results.md
           echo "## Scan Summary" >> pr-results.md
           echo "<pre>" >> pr-results.md
           cat scan-summary-results.md >> pr-results.md
