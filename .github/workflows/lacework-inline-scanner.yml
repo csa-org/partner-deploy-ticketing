@@ -26,7 +26,7 @@ jobs:
           LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
           IMAGE_NAME: local-assets
           IMAGE_TAG: latest
-          SAVE_RESULTS_IN_LACEWORK: true
+          SAVE_RESULTS_IN_LACEWORK: false
           RESULTS_IN_GITHUB_SUMMARY: true
       - name: Handle Inline Scanner results
         run: |
@@ -78,7 +78,7 @@ jobs:
           LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
           IMAGE_NAME: local-contacts
           IMAGE_TAG: latest
-          SAVE_RESULTS_IN_LACEWORK: true
+          SAVE_RESULTS_IN_LACEWORK: false
           RESULTS_IN_GITHUB_SUMMARY: true
       - name: Handle Inline Scanner results
         run: |
@@ -130,7 +130,7 @@ jobs:
           LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
           IMAGE_NAME: local-frontend
           IMAGE_TAG: latest
-          SAVE_RESULTS_IN_LACEWORK: true
+          SAVE_RESULTS_IN_LACEWORK: false
           RESULTS_IN_GITHUB_SUMMARY: true
       - name: Handle Inline Scanner results
         run: |
@@ -182,7 +182,7 @@ jobs:
           LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
           IMAGE_NAME: local-tickets
           IMAGE_TAG: latest
-          SAVE_RESULTS_IN_LACEWORK: true
+          SAVE_RESULTS_IN_LACEWORK: false
           RESULTS_IN_GITHUB_SUMMARY: true
       - name: Handle Inline Scanner results
         run: |
