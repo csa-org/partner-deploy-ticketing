@@ -14,8 +14,10 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+      - name: Execute build script
+        run: ./scripts/build_assets.sh
       - name: Build the Docker images
-        run: docker build -t local-assets:latest ./docker/Dockerfile_assets
+        run: docker build --build-context artifacts=./artifacts -t local-assets:latest -f docker/Dockerfile_assets .
       - name: Scan Dockerfile_assets for vulnerabilities using Lacework Inline Scanner
         uses: lacework/lw-scanner-action@v1.4.1
         continue-on-error: true
@@ -41,8 +43,10 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+      - name: Execute build script
+        run: ./scripts/build_contacts.sh
       - name: Build the Docker images
-        run: docker build -t local-contacts:latest ./docker/Dockerfile_contacts
+        run: docker build --build-context artifacts=./artifacts -t local-contacts:latest -f docker/Dockerfile_contacts .
       - name: Scan Dockerfile_contacts for vulnerabilities using Lacework Inline Scanner
         uses: lacework/lw-scanner-action@v1.4.1
         continue-on-error: true
@@ -68,8 +72,10 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+      - name: Execute build script
+        run: ./scripts/build_frontend.sh
       - name: Build the Docker images
-        run: docker build -t local-frontend:latest ./docker/Dockerfile_frontend
+        run: docker build --build-context artifacts=./artifacts -t local-frontend:latest -f docker/Dockerfile_frontend .
       - name: Scan Dockerfile_frontend for vulnerabilities using Lacework Inline Scanner
         uses: lacework/lw-scanner-action@v1.4.1
         continue-on-error: true
@@ -95,8 +101,10 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+      - name: Execute build script
+        run: ./scripts/build_tickets.sh
       - name: Build the Docker images
-        run: docker build -t local-tickets:latest ./docker/Dockerfile_tickets
+        run: docker build --build-context artifacts=./artifacts -t local-tickets:latest -f docker/Dockerfile_tickets .
       - name: Scan Dockerfile_tickets for vulnerabilities using Lacework Inline Scanner
         uses: lacework/lw-scanner-action@v1.4.1
         continue-on-error: true
