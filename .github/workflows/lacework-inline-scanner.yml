@@ -74,8 +74,10 @@ jobs:
         uses: actions/checkout@v3
       - name: Execute build script
         run: ./scripts/build_frontend.sh
+      - name: List out current directory structure
+        run: ls -la .
       - name: Build the Docker images
-        run: docker build --build-context artifacts=./artifacts -t local-frontend:latest -f docker/Dockerfile_frontend .
+        run: docker build --build-context artifacts=artifacts -t local-frontend:latest -f docker/Dockerfile_frontend .
       - name: Scan Dockerfile_frontend for vulnerabilities using Lacework Inline Scanner
         uses: lacework/lw-scanner-action@v1.4.1
         continue-on-error: true
