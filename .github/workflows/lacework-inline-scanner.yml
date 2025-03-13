@@ -14,106 +14,205 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+      - name: Execute build script
+        run: ./scripts/build_assets.sh
       - name: Build the Docker images
-        run: docker build -t local-assets:latest ./docker/Dockerfile_assets
+        run: docker build -t local-assets:latest -f ./docker/Dockerfile_assets artifacts
       - name: Scan Dockerfile_assets for vulnerabilities using Lacework Inline Scanner
         uses: lacework/lw-scanner-action@v1.4.1
         continue-on-error: true
         with:
-          LW_ACCOUNT_NAME: ${{ secrets.LW_ACCOUNT_NAME }}
+          LW_ACCOUNT_NAME: ${{ vars.LW_ACCOUNT_NAME }}
           LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
           IMAGE_NAME: local-assets
           IMAGE_TAG: latest
           SAVE_RESULTS_IN_LACEWORK: false
           RESULTS_IN_GITHUB_SUMMARY: true
-      - name: Change formatting for PR
+      - name: Handle Inline Scanner results
         run: |
+          awk '/┌─────────────────/{flag=1} /└─────────────────┴/{print; exit} flag' results.stdout > scan-summary-results.md
+          cat scan-summary-results.md
+          awk '/└─────────────────┴/ {found=1; next} found && /┌─────────────────/ {found=0} found {print}' results.stdout | sed '/^$/d' > scan-policy-results.md
+          cat scan-policy-results.md
+          if grep -q "Policy" scan-policy-results.md && grep -q "failed with Fail on Violation" scan-policy-results.md; then
+            touch lacework-policies-failed
+          fi
+
           echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_assets" > pr-results.md
+          echo "## Scan Summary" >> pr-results.md
           echo "<pre>" >> pr-results.md
-          cat results.stdout >> pr-results.md
+          cat scan-summary-results.md >> pr-results.md
+          echo "</pre>" >> pr-results.md
+          echo "## Policy Results" >> pr-results.md
+          echo "<pre>" >> pr-results.md
+          cat scan-policy-results.md >> pr-results.md
           echo "</pre>" >> pr-results.md
       - name: Add Inline Scanner results comment to PR
         uses: thollander/actions-comment-pull-request@v2
         with:
           filePath: pr-results.md
+      - name: Check if the scan failed
+        run: |
+          if [ -f lacework-policies-failed ]; then
+            echo "Lacework policies failed"
+            echo "Please review the results in the Lacework Vulnerabilities dossier: https://${{ vars.LW_ACCOUNT_NAME }}.lacework.net/ui/investigation/container/VulnerabilityDashboard"
+            exit 1
+          else
+            echo "Lacework policies passed"
+          fi
+
   scan-contacts:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+      - name: Execute build script
+        run: ./scripts/build_contacts.sh
       - name: Build the Docker images
-        run: docker build -t local-contacts:latest ./docker/Dockerfile_contacts
+        run: docker build -t local-contacts:latest -f ./docker/Dockerfile_contacts artifacts
       - name: Scan Dockerfile_contacts for vulnerabilities using Lacework Inline Scanner
         uses: lacework/lw-scanner-action@v1.4.1
         continue-on-error: true
         with:
-          LW_ACCOUNT_NAME: ${{ secrets.LW_ACCOUNT_NAME }}
+          LW_ACCOUNT_NAME: ${{ vars.LW_ACCOUNT_NAME }}
           LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
           IMAGE_NAME: local-contacts
           IMAGE_TAG: latest
           SAVE_RESULTS_IN_LACEWORK: false
           RESULTS_IN_GITHUB_SUMMARY: true
-      - name: Change formatting for PR
+      - name: Handle Inline Scanner results
         run: |
+          awk '/┌─────────────────/{flag=1} /└─────────────────┴/{print; exit} flag' results.stdout > scan-summary-results.md
+          cat scan-summary-results.md
+          awk '/└─────────────────┴/ {found=1; next} found && /┌─────────────────/ {found=0} found {print}' results.stdout | sed '/^$/d' > scan-policy-results.md
+          cat scan-policy-results.md
+          if grep -q "Policy" scan-policy-results.md && grep -q "failed with Fail on Violation" scan-policy-results.md; then
+            touch lacework-policies-failed
+          fi
+
           echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_contacts" > pr-results.md
+          echo "## Scan Summary" >> pr-results.md
           echo "<pre>" >> pr-results.md
-          cat results.stdout >> pr-results.md
+          cat scan-summary-results.md >> pr-results.md
+          echo "</pre>" >> pr-results.md
+          echo "## Policy Results" >> pr-results.md
+          echo "<pre>" >> pr-results.md
+          cat scan-policy-results.md >> pr-results.md
           echo "</pre>" >> pr-results.md
       - name: Add Inline Scanner results comment to PR
         uses: thollander/actions-comment-pull-request@v2
         with:
           filePath: pr-results.md
+      - name: Check if the scan failed
+        run: |
+          if [ -f lacework-policies-failed ]; then
+            echo "Lacework policies failed"
+            echo "Please review the results in the Lacework Vulnerabilities dossier: https://${{ vars.LW_ACCOUNT_NAME }}.lacework.net/ui/investigation/container/VulnerabilityDashboard"
+            exit 1
+          else
+            echo "Lacework policies passed"
+          fi
+
   scan-frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+      - name: Execute build script
+        run: ./scripts/build_frontend.sh
       - name: Build the Docker images
-        run: docker build -t local-frontend:latest ./docker/Dockerfile_frontend
+        run: docker build -t local-frontend:latest -f ./docker/Dockerfile_frontend artifacts
       - name: Scan Dockerfile_frontend for vulnerabilities using Lacework Inline Scanner
         uses: lacework/lw-scanner-action@v1.4.1
         continue-on-error: true
         with:
-          LW_ACCOUNT_NAME: ${{ secrets.LW_ACCOUNT_NAME }}
+          LW_ACCOUNT_NAME: ${{ vars.LW_ACCOUNT_NAME }}
           LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
           IMAGE_NAME: local-frontend
           IMAGE_TAG: latest
           SAVE_RESULTS_IN_LACEWORK: false
           RESULTS_IN_GITHUB_SUMMARY: true
-      - name: Change formatting for PR
+      - name: Handle Inline Scanner results
         run: |
+          awk '/┌─────────────────/{flag=1} /└─────────────────┴/{print; exit} flag' results.stdout > scan-summary-results.md
+          cat scan-summary-results.md
+          awk '/└─────────────────┴/ {found=1; next} found && /┌─────────────────/ {found=0} found {print}' results.stdout | sed '/^$/d' > scan-policy-results.md
+          cat scan-policy-results.md
+          if grep -q "Policy" scan-policy-results.md && grep -q "failed with Fail on Violation" scan-policy-results.md; then
+            touch lacework-policies-failed
+          fi
+
           echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_frontend" > pr-results.md
+          echo "## Scan Summary" >> pr-results.md
           echo "<pre>" >> pr-results.md
-          cat results.stdout >> pr-results.md
+          cat scan-summary-results.md >> pr-results.md
+          echo "</pre>" >> pr-results.md
+          echo "## Policy Results" >> pr-results.md
+          echo "<pre>" >> pr-results.md
+          cat scan-policy-results.md >> pr-results.md
           echo "</pre>" >> pr-results.md
       - name: Add Inline Scanner results comment to PR
         uses: thollander/actions-comment-pull-request@v2
         with:
           filePath: pr-results.md
+      - name: Check if the scan failed
+        run: |
+          if [ -f lacework-policies-failed ]; then
+            echo "Lacework policies failed"
+            echo "Please review the results in the Lacework Vulnerabilities dossier: https://${{ vars.LW_ACCOUNT_NAME }}.lacework.net/ui/investigation/container/VulnerabilityDashboard"
+            exit 1
+          else
+            echo "Lacework policies passed"
+          fi
+
   scan-tickets:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+      - name: Execute build script
+        run: ./scripts/build_tickets.sh
       - name: Build the Docker images
-        run: docker build -t local-tickets:latest ./docker/Dockerfile_tickets
+        run: docker build -t local-tickets:latest -f ./docker/Dockerfile_tickets artifacts
       - name: Scan Dockerfile_tickets for vulnerabilities using Lacework Inline Scanner
         uses: lacework/lw-scanner-action@v1.4.1
         continue-on-error: true
         with:
-          LW_ACCOUNT_NAME: ${{ secrets.LW_ACCOUNT_NAME }}
+          LW_ACCOUNT_NAME: ${{ vars.LW_ACCOUNT_NAME }}
           LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
           IMAGE_NAME: local-tickets
           IMAGE_TAG: latest
           SAVE_RESULTS_IN_LACEWORK: false
           RESULTS_IN_GITHUB_SUMMARY: true
-      - name: Change formatting for PR
+      - name: Handle Inline Scanner results
         run: |
+          awk '/┌─────────────────/{flag=1} /└─────────────────┴/{print; exit} flag' results.stdout > scan-summary-results.md
+          cat scan-summary-results.md
+          awk '/└─────────────────┴/ {found=1; next} found && /┌─────────────────/ {found=0} found {print}' results.stdout | sed '/^$/d' > scan-policy-results.md
+          cat scan-policy-results.md
+          if grep -q "Policy" scan-policy-results.md && grep -q "failed with Fail on Violation" scan-policy-results.md; then
+            touch lacework-policies-failed
+          fi
+
           echo "# Lacework Inline Scanner Result for ./docker/Dockerfile_tickets" > pr-results.md
+          echo "## Scan Summary" >> pr-results.md
           echo "<pre>" >> pr-results.md
-          cat results.stdout >> pr-results.md
+          cat scan-summary-results.md >> pr-results.md
+          echo "</pre>" >> pr-results.md
+          echo "## Policy Results" >> pr-results.md
+          echo "<pre>" >> pr-results.md
+          cat scan-policy-results.md >> pr-results.md
           echo "</pre>" >> pr-results.md
       - name: Add Inline Scanner results comment to PR
         uses: thollander/actions-comment-pull-request@v2
         with:
           filePath: pr-results.md
+      - name: Check if the scan failed
+        run: |
+          if [ -f lacework-policies-failed ]; then
+            echo "Lacework policies failed"
+            echo "Please review the results in the Lacework Vulnerabilities dossier: https://${{ vars.LW_ACCOUNT_NAME }}.lacework.net/ui/investigation/container/VulnerabilityDashboard"
+            exit 1
+          else
+            echo "Lacework policies passed"
+          fi
