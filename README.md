@@ -23,3 +23,4 @@ From the root of the project, run:
 ## Deployment
 
 Deployment is handled via the `detc` tool; execute the plan corresponding to your environment (see deploy folder).
+Adding things..
